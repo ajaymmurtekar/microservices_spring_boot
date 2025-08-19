@@ -17,12 +17,15 @@ public class CurrencyConversionController {
     @Autowired
     private CurrencyExchangeProxy currencyExchangeProxy;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion convertCurrency(@PathVariable String from,
                                               @PathVariable String to,
                                               @PathVariable double quantity) {
         Map<String, String> uriVariables = Map.of("from", from, "to", to);
-        ResponseEntity<CurrencyConversion> responseEntity = new RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}"
+        ResponseEntity<CurrencyConversion> responseEntity = restTemplate.getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}"
                 , CurrencyConversion.class
                 , uriVariables);
         CurrencyConversion currencyConversion = responseEntity.getBody();
