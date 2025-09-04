@@ -4,6 +4,8 @@ import com.example.jwtdemo.entity.AuthRequest;
 import com.example.jwtdemo.entity.UserInfo;
 import com.example.jwtdemo.service.JwtService;
 import com.example.jwtdemo.service.UserInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserInfoService userInfoService;
@@ -49,5 +53,12 @@ public class UserController {
             return jwtService.generateToken(authRequest.getUsername());
         }
         throw new UsernameNotFoundException("User does not exists with email: "+ authRequest.getUsername());
+    }
+
+    @GetMapping("/user/userProfile")
+    public String getUserProfile(Authentication authentication) {
+        logger.info("### Current user: "+ authentication.getName());
+        logger.info("### Authorities: "+ authentication.getAuthorities());
+        return "User Profile accessed successfully";
     }
 }
